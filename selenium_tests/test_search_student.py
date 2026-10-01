@@ -1,23 +1,30 @@
-def test_search_student(driver):
-    # Add a student for this test
-    driver.get("http://127.0.0.1:5000/students/add")
+def test_search_student(student_page):
 
-    driver.find_element("id", "name").send_keys("Search Test Student")
-    driver.find_element("id", "age").send_keys("21")
-    driver.find_element("id", "marks").send_keys("80")
+    # Add student
+    student_page.add_student(
+        "Search Test Student",
+        21,
+        80
+    )
 
-    driver.find_element("id", "add-student-button").click()
+    # IMPORTANT: verify that ADD really created the student
+    assert student_page.is_student_present(
+        "Search Test Student"
+    )
 
-    # Verify that the student was actually added
-    driver.get("http://127.0.0.1:5000/students")
-
-    assert "Search Test Student" in driver.page_source
-
-    # Now search for the student
-    driver.get("http://127.0.0.1:5000/students/search")
-
-    driver.find_element("id", "search").send_keys("Search Test Student")
-    driver.find_element("id", "search-button").click()
+    # Now perform search
+    student_page.search_student(
+        "Search Test Student"
+    )
 
     # Verify search result
-    assert "Search Test Student" in driver.page_source
+    assert "Search Test Student" in student_page.driver.page_source
+
+
+def test_search_nonexistent_student(student_page):
+
+    student_page.search_student(
+        "Student Does Not Exist"
+    )
+
+    assert "No student found." in student_page.driver.page_source

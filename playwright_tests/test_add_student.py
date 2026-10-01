@@ -1,12 +1,11 @@
-def test_add_student(page):
-    page.goto("http://127.0.0.1:5000/students/add")
+def test_add_student(student_page):
 
-    page.locator("#name").fill("Playwright Student")
-    page.locator("#age").fill("21")
-    page.locator("#marks").fill("88")
+    student_page.add_student(
+        "Playwright Student",
+        21,
+        88
+    )
 
-    page.locator("#add-student-button").click()
-
-    page.goto("http://127.0.0.1:5000/students")
-
-    assert "Playwright Student" in page.content()
+    assert student_page.is_student_present(
+        "Playwright Student"
+    )

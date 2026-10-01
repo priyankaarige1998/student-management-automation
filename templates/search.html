@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>Search Student</h1>
+
+<form method="POST" action="/students/search-result">
+
+    <input
+        id="search"
+        name="search"
+        type="text"
+        placeholder="Enter ID or name"
+    >
+
+    <button
+        id="search-button"
+        type="submit"
+    >
+        Search
+    </button>
+
+</form>
+
+{% if results is not none %}
+
+    {% if results %}
+
+        <h2>Search Results</h2>
+
+        <table id="search-results">
+
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Age</th>
+                    <th>Marks</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% for student in results %}
+
+                <tr>
+                    <td>{{ student[0] }}</td>
+                    <td>{{ student[1] }}</td>
+                    <td>{{ student[2] }}</td>
+                    <td>{{ student[3] }}</td>
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    {% else %}
+
+        <p id="no-student">No student found.</p>
+
+    {% endif %}
+
+{% endif %}
+
+{% endblock %}

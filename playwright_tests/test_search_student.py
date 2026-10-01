@@ -1,22 +1,22 @@
-def test_search_student(page):
-    # Add a student for this test
-    page.goto("http://127.0.0.1:5000/students/add")
+def test_search_student(student_page):
 
-    page.locator("#name").fill("Playwright Search Student")
-    page.locator("#age").fill("21")
-    page.locator("#marks").fill("82")
+    student_page.add_student(
+        "Playwright Search Student",
+        21,
+        82
+    )
 
-    page.locator("#add-student-button").click()
+    student_page.search_student(
+        "Playwright Search Student"
+    )
 
-    # Verify student was added
-    page.goto("http://127.0.0.1:5000/students")
+    assert "Playwright Search Student" in student_page.page.content()
 
-    assert "Playwright Search Student" in page.content()
 
-    # Search for the student
-    page.goto("http://127.0.0.1:5000/students/search")
+def test_search_nonexistent_student(student_page):
 
-    page.locator("#search").fill("Playwright Search Student")
-    page.locator("#search-button").click()
+    student_page.search_student(
+        "Student Does Not Exist"
+    )
 
-    assert "Playwright Search Student" in page.content()
+    assert "No student found." in student_page.page.content()

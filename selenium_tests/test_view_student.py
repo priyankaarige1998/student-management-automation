@@ -1,6 +1,5 @@
-def test_view_students(driver):
-    driver.get("http://127.0.0.1:5000/students")
+def test_view_students(student_page):
 
-    table = driver.find_element("id", "students-table")
+    student_page.open_students()
 
-    assert table.is_displayed()
+    assert student_page.is_students_table_visible()

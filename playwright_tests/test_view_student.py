@@ -1,6 +1,5 @@
-def test_view_students(page):
-    page.goto("http://127.0.0.1:5000/students")
+def test_view_students(student_page):
 
-    table = page.locator("#students-table")
+    student_page.open_students()
 
-    assert table.is_visible()
+    assert student_page.is_students_table_visible()

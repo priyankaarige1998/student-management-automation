@@ -1,13 +1,11 @@
-def test_invalid_marks(page):
-    page.goto("http://127.0.0.1:5000/students/add")
+def test_invalid_marks(student_page):
 
-    page.locator("#name").fill("Invalid Playwright Student")
-    page.locator("#age").fill("20")
-    page.locator("#marks").fill("150")
+    student_page.add_student(
+        "Invalid Playwright Student",
+        20,
+        150
+    )
 
-    page.locator("#add-student-button").click()
-
-    # The invalid student should not be added
-    page.goto("http://127.0.0.1:5000/students")
-
-    assert "Invalid Playwright Student" not in page.content()
+    assert not student_page.is_student_present(
+        "Invalid Playwright Student"
+    )

@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>Update Student</h1>
+
+<form method="POST">
+
+    <label>Name:</label><br>
+
+    <input
+        id="name"
+        name="name"
+        type="text"
+        value="{{ student[1] }}"
+    ><br>
+
+    <label>Age:</label><br>
+
+    <input
+        id="age"
+        name="age"
+        type="number"
+        value="{{ student[2] }}"
+    ><br>
+
+    <label>Marks:</label><br>
+
+    <input
+        id="marks"
+        name="marks"
+        type="number"
+        step="0.01"
+        value="{{ student[3] }}"
+    ><br>
+
+    <button id="update-student-button" type="submit">
+        Update Student
+    </button>
+
+</form>
+
+{% endblock %}

@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>Add Student</h1>
+
+<form method="POST">
+
+    <label>Name:</label><br>
+    <input id="name" name="name" type="text"><br>
+
+    <label>Age:</label><br>
+    <input id="age" name="age" type="number"><br>
+
+    <label>Marks:</label><br>
+    <input id="marks" name="marks" type="number" step="0.01"><br>
+
+    <button id="add-student-button" type="submit">
+        Add Student
+    </button>
+
+</form>
+
+{% endblock %}
