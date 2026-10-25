@@ -1,6 +1,18 @@
-venv/
-__pycache__/
-.pytest_cache/
+# Python cache
+
+**pycache**/
 *.pyc
-.env
+
+# Pytest
+
+.pytest_cache/
 report.html
+
+# Virtual environments
+
+venv/
+.venv/
+
+# Environment variables and secrets
+
+.env

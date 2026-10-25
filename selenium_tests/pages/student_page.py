@@ -4,7 +4,6 @@ from selenium.webdriver.support import expected_conditions as EC
 
 
 class StudentPage:
-
     BASE_URL = "http://127.0.0.1:5000"
 
     def __init__(self, driver):
@@ -12,146 +11,92 @@ class StudentPage:
         self.wait = WebDriverWait(driver, 10)
 
     def open_add_student(self):
-        self.driver.get(
-            f"{self.BASE_URL}/students/add"
-        )
+        self.driver.get(f"{self.BASE_URL}/students/add")
 
     def open_students(self):
-        self.driver.get(
-            f"{self.BASE_URL}/students"
+        self.driver.get(f"{self.BASE_URL}/students")
+        self.wait.until(
+            EC.presence_of_element_located((By.ID, "students-table"))
         )
 
     def open_search(self):
-        self.driver.get(
-            f"{self.BASE_URL}/students/search"
-        )
-
+        self.driver.get(f"{self.BASE_URL}/students/search")
         self.wait.until(
-            EC.presence_of_element_located(
-                (By.ID, "search")
-            )
+            EC.presence_of_element_located((By.ID, "search"))
         )
 
     def add_student(self, name, age, marks):
-
         self.open_add_student()
-
-        self.driver.find_element(
-            By.ID, "name"
-        ).send_keys(name)
-
-        self.driver.find_element(
-            By.ID, "age"
-        ).send_keys(str(age))
-
-        self.driver.find_element(
-            By.ID, "marks"
-        ).send_keys(str(marks))
-
-        self.driver.find_element(
-            By.ID, "add-student-button"
-        ).click()
+        self.driver.find_element(By.ID, "name").send_keys(name)
+        self.driver.find_element(By.ID, "age").send_keys(str(age))
+        self.driver.find_element(By.ID, "marks").send_keys(str(marks))
+        self.driver.find_element(By.ID, "add-student-button").click()
 
     def search_student(self, name):
-
         self.open_search()
-
         search_box = self.wait.until(
-            EC.presence_of_element_located(
-                (By.ID, "search")
-            )
+            EC.element_to_be_clickable((By.ID, "search"))
         )
-
         search_box.clear()
         search_box.send_keys(name)
-
-        self.driver.find_element(
-            By.ID, "search-button"
-        ).click()
+        self.driver.find_element(By.ID, "search-button").click()
+        self.wait.until(EC.url_contains("/students/search-result"))
 
     def get_student_id(self, name):
-
         self.open_students()
-
-        row = self.driver.find_element(
-            By.XPATH,
-            f"//tr[td[normalize-space()='{name}']]"
-        )
-
-        cells = row.find_elements(
-            By.TAG_NAME, "td"
-        )
-
-        return cells[0].text
-
-    def update_student(
-        self,
-        student_id,
-        name,
-        age,
-        marks
-    ):
-
-        self.driver.get(
-            f"{self.BASE_URL}/students/update/{student_id}"
-        )
-
-        name_field = self.wait.until(
+        row = self.wait.until(
             EC.presence_of_element_located(
-                (By.ID, "name")
+                (By.XPATH, f"//tr[td[normalize-space()='{name}']]")
             )
         )
+        cells = row.find_elements(By.TAG_NAME, "td")
+        return cells[0].text
 
-        age_field = self.driver.find_element(
-            By.ID, "age"
+    def update_student(self, student_id, name, age, marks):
+        self.driver.get(f"{self.BASE_URL}/students/update/{student_id}")
+        name_field = self.wait.until(
+            EC.presence_of_element_located((By.ID, "name"))
         )
-
-        marks_field = self.driver.find_element(
-            By.ID, "marks"
-        )
-
+        age_field = self.driver.find_element(By.ID, "age")
+        marks_field = self.driver.find_element(By.ID, "marks")
         name_field.clear()
         age_field.clear()
         marks_field.clear()
-
         name_field.send_keys(name)
         age_field.send_keys(str(age))
         marks_field.send_keys(str(marks))
-
-        self.driver.find_element(
-            By.ID, "update-student-button"
-        ).click()
+        self.driver.find_element(By.ID, "update-student-button").click()
 
     def delete_student(self, name):
-
         self.open_students()
-
-        row = self.driver.find_element(
-            By.XPATH,
-            f"//tr[td[normalize-space()='{name}']]"
+        row = self.wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, f"//tr[td[normalize-space()='{name}']]")
+            )
         )
-
-        student_id = row.find_elements(
-            By.TAG_NAME, "td"
-        )[0].text
-
-        self.driver.get(
-            f"{self.BASE_URL}/students/delete/{student_id}"
+        student_id = row.find_elements(By.TAG_NAME, "td")[0].text
+        self.driver.execute_script(
+            """
+            const form = document.createElement("form");
+            form.method = "POST";
+            form.action = arguments[0];
+            document.body.appendChild(form);
+            form.submit();
+            """,
+            f"{self.BASE_URL}/students/delete/{student_id}",
+        )
+        self.wait.until(
+            EC.presence_of_element_located((By.ID, "students-table"))
         )
 
     def is_student_present(self, name):
-
         self.open_students()
-
         rows = self.driver.find_elements(
-            By.XPATH,
-            f"//tr[td[normalize-space()='{name}']]"
+            By.XPATH, f"//tr[td[normalize-space()='{name}']]"
         )
-
         return len(rows) > 0
 
     def is_students_table_visible(self):
-
         return self.driver.find_element(
             By.ID, "students-table"
         ).is_displayed()
